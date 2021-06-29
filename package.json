@@ -1,0 +1,39 @@
+{
+  "name": "aws-node-typescript-rest-api-with-dynamodb",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w",
+    "lint": "tslint '*.ts'",
+    "start:local": "docker-compose up -d && npm-run-all -p startLambda:local",
+    "startLambda:local": "serverless offline --stage local",
+    "deploy:dev": "serverless deploy --stage dev --aws-profile beyond",
+    "deploy:prd": "serverless deploy --stage prd",
+    "removeInfra:dev": "serverless remove --stage dev --aws-profile beyond",
+    "removeInfra:prd": "serverless remove --stage prd"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.77",
+    "@types/aws-sdk": "0.0.42",
+    "@types/node": "^7.0.5",
+    "aws-lambda": "^1.0.6",
+    "npm-run-all": "^4.1.5",
+    "serverless": "^2.48.0",
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-offline": "^7.0.0",
+    "serverless-webpack": "^5.5.1",
+    "ts-loader": "^9.2.3",
+    "tslint": "^5.5.0",
+    "tslint-config-standard": "^6.0.1",
+    "typescript": "^4.3.4",
+    "webpack": "^5.40.0"
+  },
+  "dependencies": {
+    "uuid": "^3.1.0"
+  }
+}

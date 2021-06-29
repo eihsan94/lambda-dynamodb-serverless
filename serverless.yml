@@ -1,0 +1,179 @@
+service: beyond-admin
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dynamodb-local
+
+custom:
+  cors:
+    origin: "*"
+    headers:
+      - Content-Type
+      - X-Amz-Date
+      - Authorization
+      - X-Api-Key
+      - X-Amz-Security-Token
+      - X-Amz-User-Agent
+      - If-Modified-Since
+  dynamodb:
+    stages:
+      - dev
+      - local
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+  serverless-offline:
+    port: 3000
+    useSeparateProcess: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-northeast-1
+  stage: ${opt:stage}
+  environment:
+    STAGE: ${self:provider.stage}
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  # preSignUp:
+  #   handler: preSignUp.handler
+  #   events:
+  #     - cognitoUserPool:
+  #         pool: MyUserPool
+  #         trigger: PreSignUp
+  # customMessage:
+  #   handler: customMessage.handler
+  #   events:
+  #     - cognitoUserPool:
+  #         pool: MyUserPool
+  #         trigger: CustomMessage
+
+  specials_list:
+    handler: src/handler.listSpecials
+    events:
+      - http:
+          path: specials
+          method: get
+          cors: ${self:custom.cors}
+
+  specials_get:
+    handler: src/handler.getSpecials
+    events:
+      - http:
+          path: specials/{id}
+          method: get
+          cors: ${self:custom.cors}
+
+  specials_create:
+    handler: src/handler.createSpecials
+    events:
+      - http:
+          method: post
+          path: specials
+          cors: ${self:custom.cors}
+          # authorizer:
+          #   name: authorizer
+          #   arn: arn:aws:cognito-idp:ap-northeast-1:626696453961:userpool/ap-northeast-1_WTK7yVU4M
+
+  specials_update:
+    handler: src/handler.updateSpecials
+    events:
+      - http:
+          path: specials/{id}
+          method: put
+          cors: ${self:custom.cors}
+
+  specials_delete:
+    handler: src/handler.deleteSpecials
+    events:
+      - http:
+          path: specials/{id}
+          method: delete
+          cors: ${self:custom.cors}
+
+  regulars_list:
+    handler: src/handler.listRegulars
+    events:
+      - http:
+          path: regulars
+          method: get
+          cors: ${self:custom.cors}
+
+  regulars_get:
+    handler: src/handler.getRegulars
+    events:
+      - http:
+          path: regulars/{id}
+          method: get
+          cors: ${self:custom.cors}
+
+  regulars_create:
+    handler: src/handler.createRegulars
+    events:
+      - http:
+          method: post
+          path: regulars
+          cors: ${self:custom.cors}
+          # authorizer:
+          #   name: authorizer
+          #   arn: arn:aws:cognito-idp:ap-northeast-1:626696453961:userpool/ap-northeast-1_WTK7yVU4M
+
+  regulars_update:
+    handler: src/handler.updateRegulars
+    events:
+      - http:
+          path: regulars/{id}
+          method: put
+          cors: ${self:custom.cors}
+
+  regulars_delete:
+    handler: src/handler.deleteRegulars
+    events:
+      - http:
+          path: regulars/{id}
+          method: delete
+          cors: ${self:custom.cors}
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: partition_key
+            AttributeType: S
+          - AttributeName: gsi
+            AttributeType: S
+        KeySchema:
+          - AttributeName: partition_key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: gsi_1
+            KeySchema:
+              - AttributeName: partition_key
+                KeyType: HASH
+              - AttributeName: gsi
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

@@ -1,0 +1,18 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# Webpack directories
+.webpack
+
+*.d.ts
+lib
+coverage
+.dynamodb
+pseudo-job
+docker
+
+docker/
