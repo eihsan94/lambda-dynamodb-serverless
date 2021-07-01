@@ -1,5 +1,5 @@
 {
-  "name": "aws-node-typescript-rest-api-with-dynamodb",
+  "name": "lambda-dynamodb-serverlesss",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc -w",
     "lint": "tslint '*.ts'",
-    "start:local": "docker-compose up -d && npm-run-all -p startLambda:local",
+    "setup": "npm-run-all -p db:migrate db:seed",
+    "db:migrate": "serverless dynamodb migrate --stage local",
+    "db:seed": "serverless dynamodb seed --stage local",
+    "dev": "docker-compose down && docker-compose up -d && npm-run-all -p startLambda:local",
     "startLambda:local": "serverless offline --stage local",
     "deploy:dev": "serverless deploy --stage dev --aws-profile beyond",
     "deploy:prd": "serverless deploy --stage prd",

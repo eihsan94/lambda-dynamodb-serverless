@@ -28,7 +28,7 @@ Trace:
 
 npm manifest: 
   {
-    "name": "aws-node-typescript-rest-api-with-dynamodb",
+    "name": "lambda-dynamodb-serverlesss",
     "version": "0.0.0",
     "description": "",
     "main": "index.js",

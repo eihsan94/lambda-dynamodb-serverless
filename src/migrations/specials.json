@@ -1,0 +1,18 @@
+[
+    {
+        "partition_key": "u70be167c45be2606853ad1bef1c2278e-specials",
+        "title": "regular title",
+        "description": "regular description",
+        "posts": [
+            {
+                "index": "index",
+                "slug": "slug",
+                "title": "title",
+                "image": "image",
+                "subtitle": "subtitle",
+                "author": "author",
+                "postDate": "postDate"
+            }
+        ]
+    }
+]

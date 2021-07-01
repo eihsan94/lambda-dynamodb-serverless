@@ -7,7 +7,7 @@ plugins:
 
 custom:
   cors:
-    origin: "*"
+    origin: '*'
     headers:
       - Content-Type
       - X-Amz-Date
@@ -25,8 +25,14 @@ custom:
       inMemory: true
       migrate: true
       seed: true
+    seed:
+      local:
+        sources:
+          - table: ${self:service}-${opt:stage, self:provider.stage}
+            sources: [./src/migrations/specials.json]
+
   serverless-offline:
-    port: 3000
+    httpPort: 3009
     useSeparateProcess: true
 
 provider:
@@ -37,16 +43,19 @@ provider:
   environment:
     STAGE: ${self:provider.stage}
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+  lambdaHashingVersion: 20201221
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
 
 functions:
   # preSignUp:
